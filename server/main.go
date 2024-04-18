@@ -1,15 +1,51 @@
 package main
 
 import (
-	"context"
-	"google.golang.org/grpc/credentials/insecure"
+	_ "context"
+	"google.golang.org/grpc/peer"
+	"io"
 	"log"
+	"net"
 	"os"
-	"time"
 
 	ping "github.com/camartinez04/grpc-ping"
 	"google.golang.org/grpc"
 )
+
+type grpcServer struct {
+	ping.UnimplementedPingServiceServer
+}
+
+func (s *grpcServer) StreamPing(stream ping.PingService_StreamPingServer) error {
+	p, ok := peer.FromContext(stream.Context())
+	if ok {
+		log.Printf("Client connected from: %s", p.Addr)
+	}
+
+	defer func() {
+		if ok {
+			log.Printf("Client disconnected at: %s", p.Addr)
+		}
+	}()
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			// Client closed the connection
+			return nil
+		}
+		if err != nil {
+			log.Printf("Failed to receive a message from the client: %v", err)
+			return err // Return error to close the stream and handle disconnection
+		}
+
+		response := &ping.PongResponse{Message: "Ping: " + req.Message}
+		if err := stream.Send(response); err != nil {
+			log.Printf("Failed to send a message to the client: %v", err)
+			return err // Return error to close the stream and handle disconnection
+		}
+	}
+}
 
 func main() {
 
@@ -26,36 +62,15 @@ func main() {
 
 	}
 
-	conn, err := grpc.Dial(server+":"+port, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	log.Printf("Streaming Ping GRPC server on %s:%s", server, port)
+
+	lis, err := net.Listen("tcp", server+":"+port)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("failed to listen: %v", err)
 	}
-	defer func(conn *grpc.ClientConn) {
-		err := conn.Close()
-		if err != nil {
-			log.Fatalf("failed to close connection: %v", err)
-		}
-	}(conn)
-	c := ping.NewPingServiceClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	stream, err := c.StreamPing(ctx)
-	if err != nil {
-		log.Fatalf("could not stream: %v", err)
-	}
-
-	for i := 0; i < 10; i++ {
-		if err := stream.Send(&ping.PingRequest{Message: "Ping"}); err != nil {
-			log.Fatalf("could not send ping: %v", err)
-			return
-		}
-		resp, err := stream.Recv()
-		if err != nil {
-			log.Fatalf("error receiving pong: %v", err)
-			return
-		}
-		log.Printf("Response: %s", resp.Message)
+	s := grpc.NewServer()
+	ping.RegisterPingServiceServer(s, &grpcServer{})
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }
