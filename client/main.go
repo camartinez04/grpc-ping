@@ -76,6 +76,7 @@ func main() {
 	}
 }
 
+// sendAndReceiveMessages sends and receives messages on the stream until an error occurs
 func sendAndReceiveMessages(stream ping.PingService_StreamPingClient, delaySeconds int) error {
 	for {
 		if err := stream.Send(&ping.PingRequest{Message: "Pong"}); err != nil {

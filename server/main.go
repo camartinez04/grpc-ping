@@ -12,10 +12,12 @@ import (
 	"google.golang.org/grpc"
 )
 
+// grpcServer is used to implement ping.PingServiceServer
 type grpcServer struct {
 	ping.UnimplementedPingServiceServer
 }
 
+// StreamPing is a server side streaming RPC to receive messages from the client
 func (s *grpcServer) StreamPing(stream ping.PingService_StreamPingServer) error {
 	p, ok := peer.FromContext(stream.Context())
 	if ok {
