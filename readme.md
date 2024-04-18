@@ -51,6 +51,7 @@ cd client
 go build -o client
 ```
 
+
 This command compiles the client code and outputs an executable named `client`.
 
 ## Running the Server
@@ -61,13 +62,25 @@ Execute the server binary from within the `server` directory:
 ./server
 ```
 
+Optionally, you can specify the address, port and delay seconds to use:
+
+```bash
+export GRPC-SERVER="192.168.10.23"
+export GRPC-PORT="17002"
+./server
+```
+
 This will start the server, listening on the default port (e.g., 50051).
 
 ## Running the Client
 
-Execute the client binary from within the `client` directory to start sending ping requests:
+Execute the client binary from within the `client` directory to start sending ping requests, 
+you have to specify the address and port of the GRPC Server, and delay seconds to use:
 
 ```bash
+export GRPC-SERVER="192.168.10.23"
+export GRPC-PORT="17002"
+export DELAY_SECONDS="10"
 ./client
 ```
 
