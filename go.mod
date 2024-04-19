@@ -1,6 +1,6 @@
 module github.com/camartinez04/grpc-ping
 
-go 1.22
+go 1.22.2
 
 require (
 	google.golang.org/grpc v1.63.2

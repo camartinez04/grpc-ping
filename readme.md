@@ -37,12 +37,12 @@ This command generates Go code for both the gRPC services and the message types 
 
 ### Client
 ```bash
-curl -L  https://github.com/camartinez04/grpc-ping/raw/main/client/client-binaries.tar.gz > client-binaries.tar.gz
+curl -L  https://github.com/camartinez04/grpc-ping/blob/main/bin/client-bin-linux.tar.gz > client-bin-linux.tar.gz
 ```
 
 ### Server
 ```bash
-curl -L  https://github.com/camartinez04/grpc-ping/raw/main/server/server-binaries.tar.gz > server-binaries.tar.gz
+curl -L https://github.com/camartinez04/grpc-ping/blob/main/bin/server-bin-linux.tar.gz > server-bin-linux.tar.gz
 ```
 
 ## Building the Server and Client
@@ -75,7 +75,12 @@ Execute the server binary from within the `server` directory:
 
 ```bash
 ./server
-```
+Usage of ./server:
+  -port string
+      GRPC Server Port
+  -server string
+      GRPC Server Address
+ ```
 
 Optionally, you can specify the address, port and delay seconds to use:
 
@@ -89,6 +94,16 @@ This will start the server, listening on the default port (e.g., 50051).
 
 ## Running the Client
 
+```bash
+./client
+Usage of ./client:
+  -delay string
+    	Delay in seconds between pings
+  -port string
+    	GRPC Server Port
+  -server string
+    	GRPC Server Address
+```
 Execute the client binary from within the `client` directory to start sending ping requests, 
 you have to specify the address and port of the GRPC Server, and delay seconds to use:
 
