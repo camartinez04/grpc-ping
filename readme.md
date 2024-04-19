@@ -37,12 +37,12 @@ This command generates Go code for both the gRPC services and the message types 
 
 ### Client
 ```bash
-curl -L  https://github.com/camartinez04/grpc-ping/blob/main/bin/client-bin-linux.tar.gz > client-bin-linux.tar.gz
+curl -L -o client-bin-linux.tar.gz https://github.com/camartinez04/grpc-ping/raw/main/bin/client-bin-linux.tar.gz
 ```
 
 ### Server
 ```bash
-curl -L https://github.com/camartinez04/grpc-ping/blob/main/bin/server-bin-linux.tar.gz > server-bin-linux.tar.gz
+curl -L -o server-bin-linux.tar.gz https://github.com/camartinez04/grpc-ping/raw/main/bin/server-bin-linux.tar.gz
 ```
 
 ## Building the Server and Client
