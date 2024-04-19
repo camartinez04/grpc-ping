@@ -2,6 +2,10 @@
 
 This repository contains a simple gRPC-based Ping service implemented in Go. It includes a server that responds to streaming ping requests with pongs, and a client that sends a stream of ping messages.
 
+## Author
+
+Carlos Alvarado Martinez
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
@@ -76,8 +80,8 @@ Execute the server binary from within the `server` directory:
 Optionally, you can specify the address, port and delay seconds to use:
 
 ```bash
-export GRPC-SERVER="192.168.10.23"
-export GRPC-PORT="17002"
+export GRPC_PING_SERVER="192.168.10.23"
+export GRPC_PING_PORT="17002"
 ./server
 ```
 
@@ -89,9 +93,9 @@ Execute the client binary from within the `client` directory to start sending pi
 you have to specify the address and port of the GRPC Server, and delay seconds to use:
 
 ```bash
-export GRPC-SERVER="192.168.10.23"
-export GRPC-PORT="17002"
-export DELAY_SECONDS="10"
+export GRPC_PING_SERVER="192.168.10.23"
+export GRPC_PING_PORT="17002"
+export GRPC_PING_DELAY="10"
 ./client
 ```
 

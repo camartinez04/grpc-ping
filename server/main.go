@@ -52,13 +52,13 @@ func (s *grpcServer) StreamPing(stream ping.PingService_StreamPingServer) error 
 func main() {
 
 	// get interface to the server from OS ENV variable
-	server := os.Getenv("GRPC-SERVER")
+	server := os.Getenv("GRPC_PING_SERVER")
 	if server == "" {
 		server = "localhost"
 
 	}
 
-	port := os.Getenv("GRPC-PORT")
+	port := os.Getenv("GRPC_PING_PORT")
 	if port == "" {
 		port = "50051"
 
