@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	ping "github.com/camartinez04/grpc-ping"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -16,30 +18,40 @@ import (
 func main() {
 
 	// get interface to the server from OS ENV variable
-	server := os.Getenv("GRPC_PING_SERVER")
-	if server == "" {
-		server = "localhost"
+	serverEnv := os.Getenv("GRPC_PING_SERVER")
+	portEnv := os.Getenv("GRPC_PING_PORT")
+	delayStrEnv := os.Getenv("GRPC_PING_DELAY")
+
+	server := flag.String("server", serverEnv, "GRPC Server Address")
+	port := flag.String("port", portEnv, "GRPC Server Port")
+	delayStr := flag.String("delay", delayStrEnv, "Delay in seconds between pings")
+
+	if *delayStr == "" {
+		*delayStr = "5"
 
 	}
 
-	port := os.Getenv("GRPC_PING_PORT")
-	if port == "" {
-		port = "50051"
-
+	// Custom usage function
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
 	}
 
-	delayStr := os.Getenv("GRPC_PING_DELAY")
-	if delayStr == "" {
-		delayStr = "5"
+	flag.Parse()
+
+	if *server == "" || *port == "" || *delayStr == "" {
+		fmt.Println("Missing required parameters:")
+		flag.Usage()
+		os.Exit(1)
 	}
 
-	delaySeconds, _ := strconv.Atoi(delayStr)
+	delaySeconds, _ := strconv.Atoi(*delayStr)
 
 	log.Printf("GRPC Client tool!")
 
-	log.Printf("Connecting to GRPC Server on %s:%s", server, port)
+	log.Printf("Connecting to GRPC Server on %s:%s", *server, *port)
 
-	conn, err := grpc.Dial(server+":"+port, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := grpc.Dial(*server+":"+*port, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

@@ -2,6 +2,8 @@ package main
 
 import (
 	_ "context"
+	"flag"
+	"fmt"
 	"google.golang.org/grpc/peer"
 	"io"
 	"log"
@@ -52,21 +54,29 @@ func (s *grpcServer) StreamPing(stream ping.PingService_StreamPingServer) error 
 func main() {
 
 	// get interface to the server from OS ENV variable
-	server := os.Getenv("GRPC_PING_SERVER")
-	if server == "" {
-		server = "localhost"
+	serverEnv := os.Getenv("GRPC_PING_SERVER")
+	portEnv := os.Getenv("GRPC_PING_PORT")
 
+	server := flag.String("server", serverEnv, "GRPC Server Address")
+	port := flag.String("port", portEnv, "GRPC Server Port")
+
+	// Custom usage function
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
 	}
 
-	port := os.Getenv("GRPC_PING_PORT")
-	if port == "" {
-		port = "50051"
+	flag.Parse()
 
+	if *server == "" || *port == "" {
+		fmt.Println("Missing required parameters:")
+		flag.Usage()
+		os.Exit(1)
 	}
 
-	log.Printf("Streaming Ping GRPC server on %s:%s", server, port)
+	log.Printf("Streaming Ping GRPC server on %s:%s", *server, *port)
 
-	lis, err := net.Listen("tcp", server+":"+port)
+	lis, err := net.Listen("tcp", *server+":"+*port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
