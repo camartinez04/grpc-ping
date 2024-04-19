@@ -51,6 +51,11 @@ cd client
 go build -o client
 ```
 
+## Download the binaries
+
+```bash
+curl -L  https://github.com/camartinez04/grpc-ping/raw/main/client/client-binaries.tar.gz > client-binaries.tar.gz
+```
 
 This command compiles the client code and outputs an executable named `client`.
 
