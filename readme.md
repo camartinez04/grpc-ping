@@ -29,6 +29,18 @@ protoc --go_out=. --go-grpc_out=. --go_opt=paths=source_relative --go-grpc_opt=p
 
 This command generates Go code for both the gRPC services and the message types defined in the `grpcping.proto`.
 
+## Download the binaries
+
+### Client
+```bash
+curl -L  https://github.com/camartinez04/grpc-ping/raw/main/client/client-binaries.tar.gz > client-binaries.tar.gz
+```
+
+### Server
+```bash
+curl -L  https://github.com/camartinez04/grpc-ping/raw/main/server/server-binaries.tar.gz > server-binaries.tar.gz
+```
+
 ## Building the Server and Client
 
 ### Building the Server
@@ -49,12 +61,6 @@ To build the client, navigate to the `client` directory and run:
 ```bash
 cd client
 go build -o client
-```
-
-## Download the binaries
-
-```bash
-curl -L  https://github.com/camartinez04/grpc-ping/raw/main/client/client-binaries.tar.gz > client-binaries.tar.gz
 ```
 
 This command compiles the client code and outputs an executable named `client`.
